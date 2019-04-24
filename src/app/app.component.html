@@ -1,0 +1,192 @@
+
+<header style="">
+  <mat-card style="background-color:pink; text-align:center;">URL BASED DASHBOARD</mat-card>
+</header>
+
+<nav class="navbar sticky-top navbar-expand-lg" style="background-color: #e3f2fd;">
+  <a class="navbar-brand" style="float:left;"  href="#">Business Solution</a>
+  <!-- <button class="navbar-toggler"  type="button" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button> -->
+  <!-- <div  id="navbarText"> -->
+    <div class="navbar-nav  w-100 order-3 ">
+   <ul class="navbar-nav ml-auto">
+      
+      <li class="nav-item ">
+<a class="nav-link " (click)="show1=true" (click)="prepareDataForChart()" href="#">Prepare Chart</a>
+        <!-- <button class="btn btn-outline-success" id="chart1" (click)="show1=true" (click)="prepareDataForChart()">Prepare Chart Data</button> -->
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" (click)="show=true" href="#">Grid Chart</a>
+        <!-- <button class="btn btn-outline-success" (click)="show=true">Grid Chart Data</button> -->
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Select Chart -> </a>
+        </li> 
+        <li class="nav-item">
+        <a class="nav-link">
+ <select [(ngModel)]="chart"><option *ngFor="let chart of chartList" [value]="chart">{{chart}}</option></select></a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<br>
+
+<section class="container">
+
+<div class="form-group" class="row">
+<div class="col-md-4">
+	<label for="URL">Enter URL</label>
+<input type="text" class="form-control" name="enterUrl" [(ngModel)]="enterUrl" required /> &nbsp;
+</div>
+
+<div class="col-md-4">
+	<label for="URL">Response</label>
+<input type="text" class="form-control" name="resp" [(ngModel)]="resp" required /> &nbsp;
+</div>
+
+<div class="col-md-3">
+  <label for="URL">    </label>
+  <div>
+<button class="btn btn-primary center-block" style="margin-left:25px;" (click)="dataservice.fetchData(enterUrl, resp);">Fetch The URL</button>
+  </div>
+</div>
+</div>
+<br>
+
+<div class="row">
+  
+<!-- <label>Select Chart</label>
+ <select [(ngModel)]="chart"><option *ngFor="let chart of chartList" [value]="chart">{{chart}}</option></select> -->
+<mat-card class="col-md-4">
+<mat-form-field>
+  <mat-select placeholder="Select Argument (X-Axis)" [(ngModel)]="argumentField" [errorStateMatcher]="matcher">
+    <mat-option *ngFor="let col of columns" [value]="col">{{ col }}</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<!-- <label>Select Argument (X-Axis)</label>
+<select [(ngModel)]="argumentField"><option *ngFor="let col of columns" [value]="col" >{{col}}</option>
+  </select> -->
+   </mat-card>
+  &nbsp;&nbsp;
+<mat-card class="col-md-4">
+<mat-form-field>
+  <mat-select placeholder="Select Value (Y-Axis)" [(ngModel)]="valueField" [errorStateMatcher]="matcher">
+    <mat-option *ngFor="let col of columns" [value]="col">{{ col }}</mat-option>
+  </mat-select>
+  <!-- <mat-hint>Errors appear instantly!</mat-hint>
+  <mat-error *ngIf="selected.hasError('required')">You must make a selection</mat-error>
+  <mat-error *ngIf="selected.hasError('pattern') && !selected.hasError('required')">
+    Your selection is invalid
+  </mat-error> -->
+</mat-form-field>
+<!-- <label>Selecct Value (Y-Axis)</label>
+ <select [(ngModel)]="valueField"><option *ngFor="let col of columns" [value]="col">{{col}}</option></select> -->
+ </mat-card> &nbsp;&nbsp;
+
+<mat-card class="col-md-3">
+<mat-form-field>
+  <mat-select placeholder="Aggregate" [(ngModel)]="aggregation">
+    <mat-option *ngFor="let aggr of aggregates" [value]="aggr">{{ aggr }}</mat-option>
+  </mat-select>
+</mat-form-field>
+
+ <!-- <label>Aggregate</label>
+ <select [(ngModel)]="aggregation"><option *ngFor="let aggr of aggregates" [value]="aggr">{{aggr}}</option></select> -->
+ </mat-card>
+</div>
+
+
+
+
+<br>
+  <div class="list"  *ngIf="show1">
+  
+<mat-card>
+  <div class="row">
+  <div class="col-md-10">
+<button type="button" class="btn btn-info" [matMenuTriggerFor]="menu">Export</button>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item  (click)="exportButton()">Download PNG</button>
+  <button mat-menu-item (click)="exportButton()">Download JPEG</button>
+  <button mat-menu-item (click)="exportButton()">Download PDF</button>
+</mat-menu>
+
+</div>
+<div class="col-md-2" style="float:right;">
+  <button type="button" class="btn btn-info"  (click)="show1=false">Hide</button>
+</div></div>
+
+<div id='mychart' *ngIf="showChart" style="">
+<piechart 
+[labels]="labels" [chartData]="chartData" [chartType]="chart"></piechart>
+</div>
+{{ aggregation }}
+
+</mat-card>
+  
+  </div>  
+  
+<br>
+
+<div class="list"  *ngIf="show">
+<mat-card class="example-card" style="width:100%">
+  <div>
+  <h3>Data list of Grid chart</h3>
+  <button type="button" class="btn btn-info" style="float:right;" (click)="show=false">Hide</button>
+  </div>
+  
+     <table class="table table-bordered">
+<tr >
+  <th *ngFor="let table of tables">{{table}}</th>
+</tr>
+<tr *ngFor="let row of data | paginate: { itemsPerPage: 5, currentPage: p }">
+  <td *ngFor="let col of tables">{{row[col]}}</td>
+</tr>
+  </table>
+		<pagination-controls  (pageChange)="p = $event"></pagination-controls>
+</mat-card> 
+ </div>
+
+</section>
+
+
+  <!-- <div class="col-md-10">
+   <div class="dropdown">
+    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+      Export
+    </button>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" href="#">Download chart as PDF</a>
+      <a class="dropdown-item" href="#">Download chart as png</a>
+    </div>
+  </div> -->
+
+  
+<!-- <footer>
+  
+  <mat-card style="background-color:light; text-align:center; position: fixed; left: 0;
+   bottom: 0;  width: 100%;">Part of vision-centric project</mat-card>
+
+</footer> -->
+
+<!-- <div *ngFor="let data of groupedData">
+  {{data|json}}
+</div>  -->
+
+
+
+
+
+ <!-- <table class="table table-bordered">
+<tr >
+  <th *ngFor="let table of tables" >{{table}}</th>
+</tr>
+<tr *ngFor="let row of data">
+  <td *ngFor="let col of tables">{{row[col]}}</td>
+</tr>
+  </table> -->
+
+            
+          
